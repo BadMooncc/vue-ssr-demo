@@ -3,28 +3,22 @@ import createApp from './main'
 
 const { app, router, store } = createApp()
 
-// Vue.mixin({
-//   beforeRouteUpdate (to, from, next) {
-//     const { asyncData } = this.$options
-//     if (asyncData) {
-//       asyncData({
-//         store: this.$store,
-//         route: to
-//       }).then(next).catch(next)
-//     } else {
-//       next()
-//     }
-//   }
-// })
 router.onReady(() => {
   // 添加路由钩子函数，用于处理 asyncData.
   // 在初始路由 resolve 后执行，
   // 以便我们不会二次预取(double-fetch)已有的数据。
   // 使用 `router.beforeResolve()`，以便确保所有异步组件都 resolve
 
+  // 将服务端渲染时候的状态写入vuex中
+  if (window.__INITIAL_STATE__) {
+    store.replaceState(window.__INITIAL_STATE__)
+  }
   // 客户端渲染正常请求
-  router.options.routes.find(item => router.currentRoute.name === item.name).component.asyncData({ store: store })
+  if (process.env.NODE_ENV !== 'production') {
+    router.options.routes.find(item => router.currentRoute.name === item.name).component.asyncData({ store: store })
+  }
   router.beforeResolve((to, from, next) => {
+    console.log(11)
     const matched = router.getMatchedComponents(to)
     const prevMatched = router.getMatchedComponents(from)
 
@@ -34,7 +28,6 @@ router.onReady(() => {
     const activated = matched.filter((c, i) => {
       return diffed || (diffed = (prevMatched[i] !== c))
     })
-    console.log(router, 'activated')
     if (!activated.length) {
       return next()
     }
@@ -46,7 +39,6 @@ router.onReady(() => {
       }
     })).then(() => {
       // 停止加载指示器(loading indicator)
-      console.log(11111)
       next()
     }).catch(next)
   })
