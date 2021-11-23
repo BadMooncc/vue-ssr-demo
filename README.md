@@ -1,6 +1,7 @@
-# ssr-demo
+# vue-cli2 服务端渲染脚手架
 
-> A Vue.js project
+> 开发环境不会走服务端渲染，只会在项目打包后，运行server.js(node服务)会走服务端渲染。
+> 需要使用服务端渲染的数据，需要写在组件的asyncData方法中，使用vuex进行数据的存储。
 
 ## Build Setup
 
