@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import actions from './actions'
 import mutations from './mutations'
 const state = {
-  list: []
+  list: {}
 }
 Vue.use(Vuex)
 

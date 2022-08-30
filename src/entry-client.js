@@ -2,7 +2,10 @@ import createApp from './main'
 // import Vue from 'vue'
 
 const { app, router, store } = createApp()
-
+// 将服务端渲染时的状态写入vuex中
+if (window.__INITIAL_STATE__) {
+  store.replaceState(window.__INITIAL_STATE__.state)
+}
 router.onReady(() => {
   // 添加路由钩子函数，用于处理 asyncData.
   // 在初始路由 resolve 后执行，
@@ -14,11 +17,10 @@ router.onReady(() => {
     store.replaceState(window.__INITIAL_STATE__)
   }
   // 客户端渲染正常请求
-  if (process.env.NODE_ENV !== 'production') {
-    router.options.routes.find(item => router.currentRoute.name === item.name).component.asyncData({ store: store })
-  }
+  // if (process.env.NODE_ENV !== 'production') {
+  //   router.options.routes.find(item => router.currentRoute.name === item.name).component.asyncData({ store: store })
+  // }
   router.beforeResolve((to, from, next) => {
-    console.log(11)
     const matched = router.getMatchedComponents(to)
     const prevMatched = router.getMatchedComponents(from)
 

@@ -5,6 +5,11 @@
         <div>
             <router-link to="/home">{{ conf.message }}</router-link>
         </div>
+        store 服务端渲染
+        <div>{{ conf2.location }}</div>
+        <div>
+            <router-link to="/home">{{ conf2.message }}</router-link>
+        </div>
     </div>
 </template>
 
@@ -15,17 +20,28 @@ export default {
   asyncData ({ store }) {
     // console.log(store, 'store')
     return Promise.all([
-      getList().then((res) => {
-        store.commit('GET_LIST', res)
-        return res
-      })
-    ])
+      getList(),
+      getList()
+    ]).then((res) => {
+      store.commit('GET_LIST', res[1])
+      return { conf: res[0], conf2: res[1] }
+    })
   },
   computed: {
-    conf () {
+    conf2 () {
       return this.$store.state.list
     }
   },
+  data () {
+    return {
+      conf: {}
+    }
+  },
+  // computed: {
+  //   conf () {
+  //     return this.$store.state.list
+  //   }
+  // },
   created () {
     console.log(JSON.stringify(this.conf), 'created')
   },

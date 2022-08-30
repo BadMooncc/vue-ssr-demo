@@ -4,9 +4,10 @@ import Vue from 'vue'
 import App from './App'
 import createRouter from './router'
 import createStore from './store'
-
+import mergeAsyncData from '@/mixins/mergeAsyncData'
 Vue.config.productionTip = false
 
+Vue.mixin(mergeAsyncData)
 export default function () {
   const router = createRouter()
   const store = createStore()
